@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-interface FinancialInformation {
+export interface FinancialInformation {
   usdToBrlRate: number;
   bitcoinValueInBrl: number;
   microsoftValueInBrl: number;
