@@ -1,0 +1,12 @@
+.Disconnected-Container {
+    height: 100vh;
+    display: grid;
+    place-items: center;
+}
+
+.Disconnected-Message {
+    text-align: center;
+    color: rgb(199, 57, 57);
+    font-size: 1.4em;
+    font-weight: 600;
+}

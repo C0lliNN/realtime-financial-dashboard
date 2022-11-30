@@ -40,10 +40,18 @@ async function getUsdToBrlRate(): Promise<number> {
     },
   };
 
-  const res = await fetch(url, options);
-  const data: any = await res.json();
+  try {
+    const response = await fetch(url, options);
+    const data: any = await response.json();
 
-  return parseFloat(data.rates.BRL.rate);
+    if (!response.ok) {
+      throw data
+    }
+
+    return parseFloat(data.rates.BRL.rate);
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }
 
 async function getBitcoinValue(): Promise<number> {
@@ -57,12 +65,20 @@ async function getBitcoinValue(): Promise<number> {
     },
   };
 
-  const response = await fetch(url, options);
-  const data: any = await response.json();
+  try {
+    const response = await fetch(url, options);
+    const data: any = await response.json();
 
-  return parseFloat(
-    data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
-  );
+    if (!response.ok) {
+      throw data
+    }
+
+    return parseFloat(
+      data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
+    );
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }
 
 async function getMicrosoftValue(): Promise<number> {
@@ -76,13 +92,21 @@ async function getMicrosoftValue(): Promise<number> {
     },
   };
 
-  const response = await fetch(url, options);
-  const data = await response.json();
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
 
-  const values = data["Time Series (1min)"];
-  const lastData = Object.keys(values).pop();
+    if (!response.ok) {
+      throw data
+    }
 
-  return parseFloat(values[lastData as string]["4. close"]);
+    const values = data["Time Series (1min)"];
+    const lastData = Object.keys(values).pop();
+
+    return parseFloat(values[lastData as string]["4. close"]);
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }
 
 async function getAppleValue(): Promise<number> {
@@ -96,11 +120,19 @@ async function getAppleValue(): Promise<number> {
     },
   };
 
-  const response = await fetch(url, options);
-  const data = await response.json();
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
 
-  const values = data["Time Series (1min)"];
-  const lastData = Object.keys(values).pop();
+    if (!response.ok) {
+      throw data
+    }
 
-  return parseFloat(values[lastData as string]["4. close"]);
+    const values = data["Time Series (1min)"];
+    const lastData = Object.keys(values).pop();
+
+    return parseFloat(values[lastData as string]["4. close"]);
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }

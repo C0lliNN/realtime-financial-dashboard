@@ -1,5 +1,6 @@
 import express from "express";
 import http from "http";
+import cors from "cors";
 import { Server } from "socket.io";
 import {
   FinancialInformation,
@@ -7,8 +8,15 @@ import {
 } from "./financial";
 
 const app = express();
+app.use(cors());
+
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
 let latestFinancialInformation: FinancialInformation | null = null;
 
@@ -19,12 +27,12 @@ setInterval(() => {
 
       latestFinancialInformation = financialInfo;
 
-      io.send("newFinancialInformation", financialInfo);
+      io.emit("newFinancialInformation", financialInfo);
     })
     .catch((err) =>
       console.error("Error when fetching financial information:", err)
     );
-}, 5000);
+}, 1000 * 60);
 
 app.get("/health-check", (req, res) => {
   res.send({ status: "OK" });
@@ -32,9 +40,9 @@ app.get("/health-check", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
-
+  
   if (latestFinancialInformation) {
-    socket.send("newFinancialInformation", latestFinancialInformation)
+    socket.emit("newFinancialInformation", latestFinancialInformation);
   }
 
   socket.on("disconnect", () => {
